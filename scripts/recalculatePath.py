@@ -48,22 +48,13 @@ class recalculatePath:
             #loop until all possible nodes have been visited
             while True and not rospy.is_shutdown():
                 if len(self.toVisit)==0:
-                    print "reached End"
-                    print "end Count", count
-                    print "lowest error: ", self.lowest_error
-                    print "start error: ", totError
-                    print "starPoint: ", startPoint.x, startPoint.y
-                    print "endPoint: ", endPoint.x, endPoint.y
-                    print "size visited: ", len(self.visited)
                     return self.path
                 ((x,y),t1, t2, err, toterr, new_front_ec, new_back_ec) = self.toVisit.pop()
                 #round to make it faster, not having to visit as many nodes that are similar
 
                 ((round_x, round_y), round_theta1, round_theta2) = rounding(x, y, t1, t2, self.modPoint, self.modTheta)
                 prev_err = self.errorList[((round_x, round_y), round_theta1, round_theta2)]
-                if (((round_x,round_y),round_theta1, round_theta2) not in self.visited and toterr < self.lowest_error):
-                    break
-                if prev_err>toterr:
+                if ((round_x,round_y),round_theta1, round_theta2) not in self.visited: #or prev_err>toterr:
                     break
             #found new node to visit
             self.pos = Point(x,y) # get the toPoint
@@ -81,9 +72,8 @@ class recalculatePath:
                 #rospy.sleep(0.2)
                 (new_point, nt1, nt2) = calculate_steering(radians(MAX_RIGHT_ANGLE), radians(MAX_LEFT_ANGLE), dd, 10, 0, self.pos, self.theta1, self.theta2, self.front_ec)
                 nerror= self.front_ec.calculateError(new_point)
-                #self.path_pub.publish(Path(self.gather_x_y_path(startPoint, new_point, nt1, nt2, nerror)))
+                self.path_pub.publish(Path(self.gather_x_y_path(startPoint, new_point, nt1, nt2, nerror)))
                 if abs(nerror)< 1 and toterr < self.lowest_error:
-                    print "found better solution, error: ", toterr
                     self.path = self.gatherPath(startPoint, new_point, nt1, nt2, nerror, err)
                     self.lowest_error = toterr
                 #mark visited

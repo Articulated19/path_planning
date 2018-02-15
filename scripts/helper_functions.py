@@ -1,13 +1,12 @@
 from Point import *
 from math import *
 
-
 HEADER_FRONTAXIS_TO_JOINT = 22.0
 HEADER_BACKAXIS_TO_JOINT = 5.0
 HEADER_LENGTH = 27.0
-TRAILER_LENGTH = 49.625 #44.5+10.25/2#+2.5
+TRAILER_LENGTH = 44.5+10.25/2
 HL_FRONT = 9.5
-TL_BACK = 13.625 #(10.25/2) + 8.5#-2.5
+TL_BACK = 10.25/2 + 8.5
 
 HEADER_WIDTH = 18;
 TRAILER_WIDTH = 18
@@ -20,36 +19,6 @@ OUTSIDE_TURN_ERROR = 9
 OTHERLANE_WEIGHT = 10
 PADDING_WEIGHT = 20
 DT = 25
-
-
-PATH_LENGTH_INDEX = 45
-PATH_CUTOFF_RATIO = 2.5
-OBSTACLE_BACKTRACK_INDEX_DISTANCE = 11
-OBSTACLE_LOOKAHEAD_EULER_DISTANCE = 160.0
-REFPATH_POINT_DENSITY = 20.0
-
-FEISABLE_MAX_TIME = 4
-FEISABLE_MOD_POINT = 6.0
-FEISABLE_MOD_THETA = 0.5
-
-FIRST_MOD_POINT = 6.0
-FIRST_MOD_THETA = 0.5
-
-MOD_POINT = 3.0
-MOD_THETA = 0.3
-
-RPI_FEISABLE_MAX_TIME = 8
-RPI_FEISABLE_MOD_POINT = 9.0
-RPI_FEISABLE_MOD_THETA = 0.6
-
-RPI_FIRST_MOD_POINT = 9.0
-RPI_FIRST_MOD_THETA = 0.6
-
-RPI_MOD_POINT = 9.0
-RPI_MOD_THETA = 0.6
-
-
-MAX_TIME = 15
 
 
 def calculate_steering(steering_min, steering_max, dd, iters, target_error, pos, theta1, theta2, ec):
@@ -79,45 +48,48 @@ def calculateNextState(theta1, theta2, pos, dd, steering_angle_rad):
 
     next_theta2 = theta2 + (x * sin((atan2(r*dt1, dd) + theta1 - theta2))) / TRAILER_LENGTH
 
+
+
     dx = pos.x - HEADER_LENGTH * cos(theta1)
     dy = pos.y - HEADER_LENGTH * sin(theta1)
 
     next_x = dx + dd * cos(t1_avg) + HEADER_LENGTH * cos(next_theta1)
     next_y = dy + dd * sin(t1_avg) + HEADER_LENGTH * sin(next_theta1)
 
-    return (Point(next_x,next_y), next_theta1, next_theta2)
 
+    return (Point(next_x,next_y), next_theta1, next_theta2)
 
 def rounding(x, y, th1, th2, modPoint, modTheta):
 
     m_x = x % modPoint
-    if m_x >= (modPoint/float(2)):   #round up
+    if m_x >= modPoint/2:   #round up
         x = x-m_x + modPoint
     else:                   #round down
         x = x - m_x
 
     m_y = y % modPoint
-    if m_y >= (modPoint/float(2)):   #round up
+    if m_y >= modPoint/2:   #round up
         y = y-m_y + modPoint
     else:                   #round down
         y = y - m_y
 
     th1 = round(th1, 1)
     m_t1 = round(th1 % modTheta, 1)
-    if m_t1 >= (modTheta/float(2)):   #round up
+    if m_t1 >= modTheta/2:   #round up
         th1 = th1-m_t1 + modTheta
     else:                   #round down
         th1 = th1 - m_t1
 
     th2 = round(th2, 1)
     m_t2 = round(th2 % modTheta, 1)
-    if m_t2 >= (modTheta/float(2)):   #round up
+    if m_t2 >= modTheta/2:   #round up
         th2 = th2-m_t2 + modTheta
     else:                   #round down
         th2 = th2 - m_t2
 
     return ((x,y),th1,th2)
-
+    
+    
 
 def getPointsInBetween(p1, p2, n):
     p1x, p1y = p1
@@ -136,7 +108,6 @@ def getPointsInBetween(p1, p2, n):
         points.append((x, y))
 
     return points
-
 
 #Exakt some method is in auto_truck, should be placed in a central package or something
 def hasPassedLine(p, (l1, l2)):
@@ -187,14 +158,13 @@ def getClosestIndex(path, (x,y)):
             minindex = i
         i += 1
     return minindex
-
-
+    
 def getDistance((x1,y1), (x2, y2)):
     return sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-
 def traversePath(p, path):
     path = list(path)
+
 
     if len(path) < 2:
         return path
@@ -202,7 +172,9 @@ def traversePath(p, path):
     l1 = path.pop(0)
     l2 = path.pop(0)
 
+
     while hasPassedLine(Point(*p), (Point(l1.x, l1.y), Point(l2.x, l2.y))):
+
 
         if len(path) == 0:
             return [l2]
@@ -212,3 +184,5 @@ def traversePath(p, path):
         l2 = path.pop(0)
 
     return [l1, l2] + path
+
+

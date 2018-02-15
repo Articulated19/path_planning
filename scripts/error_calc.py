@@ -27,12 +27,8 @@ class errorCalc:
             self.line= (tempP1,tempP2)
             (self.p1,self.p2) = self.line
 
-        #print "p0", p0.x, p0.y, "p1 ", self.p1.x, self.p1.y, "p2 ", self.p2.x, self.p2.y
         isLeft = ((self.p2.x - self.p1.x)*(p0.y - self.p1.y) - (self.p2.y - self.p1.y)*(p0.x - self.p1.x)) >0 #decides if the error is to the left of centerline or not
-        value = abs((self.p2.x - self.p1.x)*(self.p1.y-p0.y) - (self.p1.x-p0.x)*(self.p2.y-self.p1.y)) / (sqrt((self.p2.x-self.p1.x)*(self.p2.x-self.p1.x) + (self.p2.y - self.p1.y)*(self.p2.y - self.p1.y)))
-        #print "first", abs((self.p2.x - self.p1.x)*(self.p1.y-p0.y) - (self.p1.x-p0.x)*(self.p2.y-self.p1.y))
-        #print "second", (sqrt((self.p2.x-self.p1.x)*(self.p2.x-self.p1.x) + (self.p2.y - self.p1.y)*(self.p2.y - self.p1.y)))
-        #print "value", value
+        value = abs((self.p2.x - self.p1.x)*(self.p1.y-p0.y) - (self.p1.x-p0.x)*(self.p2.y-self.p1.y)) / (sqrt((self.p2.x-self.p1.x)*(self.p2.x-self.p1.x) + (self.p2.y-self.p1.y)*(self.p2.y-self.p1.y)))
         if(isLeft):
             return -value
         else:
@@ -41,7 +37,6 @@ class errorCalc:
     def isAboveEnd (self,begin, end, p0):
         #checks if a point is passed the end point of a line.
         if begin.x - end.x !=0 and begin.y - end.y !=0:
-            #print "in is above ned: p0", p0.x, p0.y, "begin ", begin.x, begin.y, "end ", end.x, end.y
             slope = float(begin.y - end.y) / float(begin.x - end.x)
             prependularSlope = (-1)/slope
             prependularM = end.y - end.x*prependularSlope
@@ -50,7 +45,6 @@ class errorCalc:
                 return (p0.x*prependularSlope + prependularM - p0.y) < 0
             else:
                 #going down
-                #print (p0.x*prependularSlope + prependularM - p0.y) > 0
                 return (p0.x*prependularSlope + prependularM - p0.y) > 0
         elif begin.x - end.x:
             #going straight in x direction
