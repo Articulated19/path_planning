@@ -1,5 +1,6 @@
 from Point import *
 from math import *
+import rospy
 
 HEADER_FRONTAXIS_TO_JOINT = 22.0
 HEADER_BACKAXIS_TO_JOINT = 5.0
@@ -19,6 +20,14 @@ OUTSIDE_TURN_ERROR = 9
 OTHERLANE_WEIGHT = 10
 PADDING_WEIGHT = 20
 DT = 25
+
+
+use_trailer = rospy.get_param('visualization/trailer')
+if not use_trailer:
+    TRAILER_WIDTH = 1
+    TRAILER_LENGTH = 1
+    MAX_LEFT_ANGLE = -15
+    MAX_RIGHT_ANGLE = 15
 
 
 def calculate_steering(steering_min, steering_max, dd, iters, target_error, pos, theta1, theta2, ec):
