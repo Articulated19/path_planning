@@ -10,6 +10,7 @@
 #include <string>
 #include <cstring>
 
+
 using namespace std;
 
 
@@ -20,7 +21,7 @@ void toCharArray(string, char*);
 
 int main(int argc, const char * argv[]) {
     Point2D* pos = new Point2D(1,4);
-    Node* n = new Node(nullptr, "Test", *pos);
+    Node* n = new Node(NULL, "Test", *pos);
     std::cout << n->getName();
 
     return 0;
