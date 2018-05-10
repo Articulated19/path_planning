@@ -241,7 +241,7 @@ class PathPlanningNode:
 
     def truckStateHandler(self, data):
         self.latest_state = VehicleState(data.p.x / self.scale, data.p.y / self.scale, data.theta1, data.theta2)
-        
+        self.ref_obj.checkIfNodeWasPassed(data.p.x, data.p.y)
         self.current_path_states = traversePath(self.latest_state.getPoint(), self.current_path_states)
 
 
